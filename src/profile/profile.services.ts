@@ -11,7 +11,10 @@ import { ProfileDto } from 'src/dto/create-profile.dto';
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectRepository(Profile) private readonly profileRepository: Repository<Profile>) {}
+    @InjectRepository(Profile)
+    private readonly profileRepository: Repository<Profile>,
+    // private readonly authRepository: Repository<Auth>,
+  ) {}
 
   // async login(authLoginDto: AuthLoginDto): Promise<LoginResponse> {
   //   try {
@@ -38,15 +41,14 @@ export class ProfileService {
   //   }
   // }
 
-  async createProfile(profileDto: ProfileDto, req: Request): Promise<Profile> {
-    const id = req["user"].sub
+  async createProfile(profileDto: ProfileDto, id: number): Promise<Profile> {
     const user = await this.profileRepository.findOneBy({ id });
     console.log('====================================');
-    console.log("user service:", user);
-    console.log("id service:", id);
+    console.log('user service:', user);
+    console.log('id service:', id);
     console.log('====================================');
     if (!user) {
-      throw new UnauthorizedException("unknown user");
+      throw new UnauthorizedException('unknown user');
     }
     // if (!profileDto.) {
     //   throw new UnauthorizedException("unknown user");

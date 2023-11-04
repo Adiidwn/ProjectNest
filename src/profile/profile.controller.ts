@@ -25,14 +25,14 @@ export class ProfileController {
   // }
 
   @UseGuards(AuthGuard)
-  @Post('/create')
+  @Post('/create/:id')
 
-  async createProfile(@Body() profileDto: ProfileDto, @Req() req: Request) {
+  async createProfile(@Body() profileDto: ProfileDto, @Param("id") id: number) {
     console.log('asdasdsad');
-    console.log('id controller:', req.body);
+    console.log('id controller:', id);
     const createProfile = await this.profileService.createProfile(
       profileDto,
-      req,
+      id,
     );
     console.log('createProfile controller:', createProfile);
     return createProfile;

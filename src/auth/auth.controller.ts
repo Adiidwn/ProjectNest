@@ -6,11 +6,12 @@ import {
   Post,
   Req,
   Res,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/create-auth.dto';
 import { AuthService } from './auth.services';
+import { AuthGuard } from 'src/profile/auth.guard';
 
 @Controller('auths')
 export class AuthController {
@@ -18,6 +19,7 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() authLoginDto: AuthLoginDto, @Res() res: Response) {
+    console.log('AuthLoginDto controller:', authLoginDto);
     const login = await this.authService.login(authLoginDto);
     if (!login) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
@@ -25,6 +27,9 @@ export class AuthController {
         message: 'Unauthorized',
       });
     }
+    console.log('====================================');
+    console.log('login controller:', login);
+    console.log('====================================');
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: login,
@@ -50,10 +55,20 @@ export class AuthController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get('/profile')
-  getProfile(@Req() req: Request) {
-    const user = req.body;
-    console.log('req controller:', req.body);
-    return user;
+  async getProfile(@Req() req: Request, @Res() res: Response) {
+    try {
+      const authCheck = await this.authService.authCheck(req);
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        data: authCheck,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: error.message,
+      });
+    }
   }
 }

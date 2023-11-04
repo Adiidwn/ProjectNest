@@ -1,14 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/create-auth.dto';
 import { Repository } from 'typeorm';
 import { Auth } from './auth.entity';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { Profile } from 'src/profile/profile.entity';
 
 interface LoginResponse {
-  user: Auth;
+  user: userLogin;
   access_token: string;
+}
+
+interface userLogin {
+  id: number;
+  username: string;
+  email: string;
+  description: string;
+  profiles: Profile[];
 }
 
 @Injectable()
@@ -20,33 +29,56 @@ export class AuthService {
 
   async login(authLoginDto: AuthLoginDto): Promise<LoginResponse> {
     try {
-      const user = await this.authRepository.findOne({
+      const checkUser = await this.authRepository.findOne({
         where: {
           username: authLoginDto.username,
         },
-        select: ['id', 'username', 'password', 'email', 'description', 'profiles'],
+        select: [
+          'id',
+          'username',
+          'password',
+          'email',
+          'description',
+          'profiles',
+        ],
       });
       console.log('====================================');
-      console.log("user service: ", user);
+      console.log('user service: ', checkUser);
       console.log('====================================');
-      if (!user) {
+      if (!checkUser) {
         return {
-          user,
-          access_token: ("Error Email / password is wrong"),
+          user: null,
+          access_token: 'Error Email / password is wrong',
         };
       }
       const isMatch = await bcrypt.compare(
         authLoginDto.password,
-        user.password,
+        checkUser.password,
       );
+      console.log('====================================');
+      console.log('isMatch: ', isMatch);
+      console.log('====================================');
       if (!isMatch) {
         throw new UnauthorizedException();
       }
-      const payload = { sub: user.id, username: user.username };
+      const payload = {
+        id: checkUser.id,
+        username: checkUser.username,
+        email: checkUser.email,
+        description: checkUser.description,
+        profiles: checkUser.profiles,
+      };
+      const user = {
+        id: checkUser.id,
+        username: checkUser.username,
+        email: checkUser.email,
+        description: checkUser.description,
+        profiles: checkUser.profiles,
+      };
 
       return {
         user,
-        access_token: await this.jwtService.signAsync(payload),
+        access_token: this.jwtService.sign(payload),
       };
     } catch (err) {
       return null;
@@ -62,5 +94,21 @@ export class AuthService {
     const regist = this.authRepository.create(authRegisterDto);
 
     return await this.authRepository.save(regist);
+  }
+
+  async authCheck(req: Request) {
+    try {
+      const loginSession = req['user'];
+      const user = await this.authRepository.findOne({
+        where: {
+          id: loginSession.id,
+        },
+        select: ['id', 'username', 'email', 'description', 'profiles'],
+      });
+
+      return user
+    } catch (error) {
+      return null
+    }
   }
 }
