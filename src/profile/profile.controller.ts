@@ -9,7 +9,8 @@ import { AuthGuard } from './auth.guard';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  // @Post('/login')
+  // @UseGuards(AuthGuard)
+  // @Get('/profiles')
   // async login(@Body() authLoginDto: AuthLoginDto, @Res() res: Response) {
   //   const login = await this.authService.login(authLoginDto);
   //   if (!login) {
@@ -25,17 +26,33 @@ export class ProfileController {
   // }
 
   @UseGuards(AuthGuard)
-  @Post('/create/:id')
+  @Post('/create')
 
-  async createProfile(@Body() profileDto: ProfileDto, @Param("id") id: number) {
+  async createProfile(@Body() profileDto: ProfileDto, @Req() req: Request) {
     console.log('asdasdsad');
-    console.log('id controller:', id);
+    console.log('id controller:', req["user"]);
     const createProfile = await this.profileService.createProfile(
       profileDto,
-      id,
+      req,
     );
     console.log('createProfile controller:', createProfile);
     return createProfile;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/update/:id')
+
+  async updateProfile(@Body() profileDto: ProfileDto, @Param("id") id: number, @Req() req: Request) {
+    console.log('asdasdsad');
+    console.log('user controller:', req["user"]);
+    console.log('id controller:', id);
+    const updateProfile = await this.profileService.updateProfile(
+      profileDto,
+      id,
+      req
+    );
+    console.log('updateProfile controller:', updateProfile);
+    return updateProfile;
   }
 
  

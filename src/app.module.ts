@@ -4,6 +4,7 @@ import { Profile } from './profile/profile.entity';
 import { AuthModule } from './auth/auth.module';
 import { Auth } from './auth/auth.entity';
 import { ProfileModule } from './profile/profile.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { ProfileModule } from './profile/profile.module';
       synchronize: true,
     }),
     AuthModule,
-    ProfileModule
+    ProfileModule,
+    SocketModule
   ],
 })
 export class AppModule {}

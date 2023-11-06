@@ -3,9 +3,10 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Auth } from './auth.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../profile/jwtConstant';
+import { jwtConstants } from './jwtConstant';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthService } from './auth.services';
+import { Repository } from 'typeorm';
 
 @Module({
   imports: [
@@ -17,10 +18,11 @@ import { AuthService } from './auth.services';
       signOptions: { expiresIn: '6000000s' },
     }),
   ],
-  controllers: [AuthController],  
-  providers: [
-    AuthService,
-  ],
+  controllers: [AuthController],
+  providers: [AuthService],
   exports: [AuthService],
 })
+// export class AuthModule {
+//   constructor(private authRepository: Repository<Auth>) {}
+// }
 export class AuthModule {}

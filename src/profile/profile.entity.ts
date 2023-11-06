@@ -1,5 +1,5 @@
 import { Auth } from 'src/auth/auth.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'profiles' })
 export class Profile {
@@ -30,6 +30,9 @@ export class Profile {
   @Column({nullable: true})
   image: string;
 
-  @ManyToOne(() => Auth, (auths) => auths.profiles)
+  // @ManyToOne(() => Auth, (auths) => auths.profiles)
+  // auths: Auth;
+  @OneToOne(() => Auth)
+  @JoinColumn()
   auths: Auth;
 }

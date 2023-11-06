@@ -2,10 +2,8 @@ import { Profile } from 'src/profile/profile.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
-  OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity({ name: 'auths' })
@@ -25,8 +23,8 @@ export class Auth {
   @Column({ nullable: true })
   description: string;
 
-  @OneToMany(() => Profile, (profiles) => profiles.auths)
-  profiles: Profile[];
+  @OneToOne(() => Profile, (profiles) => profiles.auths)
+  profiles: Profile;
   // @OneToOne(() => Profile)
   // @JoinColumn()
   // profiles: Profile;

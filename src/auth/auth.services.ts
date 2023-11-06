@@ -17,7 +17,7 @@ interface userLogin {
   username: string;
   email: string;
   description: string;
-  profiles: Profile[];
+  profiles: Profile;
 }
 
 @Injectable()
@@ -33,6 +33,7 @@ export class AuthService {
         where: {
           username: authLoginDto.username,
         },
+        relations: ['profiles'],
         select: [
           'id',
           'username',
