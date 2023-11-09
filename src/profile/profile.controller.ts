@@ -29,7 +29,7 @@ export class ProfileController {
   @Post('/create')
 
   async createProfile(@Body() profileDto: ProfileDto, @Req() req: Request) {
-    console.log('asdasdsad');
+    console.log('check');
     console.log('id controller:', req["user"]);
     const createProfile = await this.profileService.createProfile(
       profileDto,
@@ -43,7 +43,7 @@ export class ProfileController {
   @Post('/update/:id')
 
   async updateProfile(@Body() profileDto: ProfileDto, @Param("id") id: number, @Req() req: Request) {
-    console.log('asdasdsad');
+    console.log('test');
     console.log('user controller:', req["user"]);
     console.log('id controller:', id);
     const updateProfile = await this.profileService.updateProfile(

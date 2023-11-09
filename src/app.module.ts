@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Profile } from './profile/profile.entity';
-import { AuthModule } from './auth/auth.module';
 import { Auth } from './auth/auth.entity';
+import { AuthModule } from './auth/auth.module';
+import { Profile } from './profile/profile.entity';
 import { ProfileModule } from './profile/profile.module';
-import { SocketModule } from './socket/socket.module';
+import { MessagesModule } from './messages/messages.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -15,12 +15,12 @@ import { SocketModule } from './socket/socket.module';
       username: 'postgres',
       password: '1234',
       database: 'nest',
-      entities: [Auth,Profile],
+      entities: [Auth, Profile],
       synchronize: true,
     }),
     AuthModule,
     ProfileModule,
-    SocketModule
+    MessagesModule,
   ],
 })
 export class AppModule {}

@@ -45,6 +45,7 @@ export class ProfileService {
     console.log('====================================');
     console.log('user service:', user);
     console.log('====================================');
+
     if (!user) {
       throw new UnauthorizedException('unknown user');
     }
