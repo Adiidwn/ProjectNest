@@ -1,4 +1,5 @@
 import { Profile } from 'src/profile/profile.entity';
+import { Role } from 'src/role/role.enum';
 import {
   Column,
   Entity,
@@ -28,4 +29,5 @@ export class Auth {
   // @OneToOne(() => Profile)
   // @JoinColumn()
   // profiles: Profile;
+  // roles:Role[]
 }
