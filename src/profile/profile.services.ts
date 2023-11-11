@@ -15,30 +15,32 @@ export class ProfileService {
     private readonly profileRepository: Repository<Profile>, // private readonly authRepository: Repository<Auth>,
   ) {}
 
-  // async login(authLoginDto: AuthLoginDto): Promise<LoginResponse> {
-  //   try {
-  //     const user = await this.authRepository.findOne({
-  //       where: {
-  //         username: authLoginDto.username,
-  //       },
-  //     });
-  //     const isMatch = await bcrypt.compare(
-  //       authLoginDto.password,
-  //       user.password,
-  //     );
-  //     if (!isMatch) {
-  //       throw new UnauthorizedException();
-  //     }
-  //     const payload = { sub: user.id, username: user.username };
+  async getProfile(authLoginDto: AuthLoginDto, req: Request, id: number): Promise<Profile> {
+    try {
+      const dataUser = req['user'];
+      const user = await this.profileRepository.findOne({
+        where: {
+          id,
+          auths: dataUser,
+        },
+        select: [
+          'displayName',
+          'gender',
+          'birthday',
+          'horoscope',
+          'zodiac',
+          'height',
+          'weight',
+          'image',
+          'auths',
+        ],
+      });
 
-  //     return {
-  //       user,
-  //       access_token: await this.jwtService.signAsync(payload),
-  //     };
-  //   } catch (err) {
-  //     return null;
-  //   }
-  // }
+      return user
+    } catch (err) {
+      return null;
+    }
+  }
 
   async createProfile(profileDto: ProfileDto, req: Request): Promise<Profile> {
     const user = req['user'];
